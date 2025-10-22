@@ -1,6 +1,110 @@
 # Blackshot
 
 <div align="center">
+  <img src="./icon.png" alt="Blackshot Icon" width="128">
+</div>
+
+<div align="center">
+  <img src="https://img.shields.io/badge/platform-macOS%2026%2B-blue" alt="Platform">
+  <img src="https://img.shields.io/badge/Swift-5.0-orange" alt="Swift">
+  <img src="https://img.shields.io/badge/license-MIT-green" alt="License">
+</div>
+
+> **English | [中文说明](#blackshot-中文版)**
+
+---
+
+## 🪶 Overview
+
+**Blackshot** is a lightweight macOS menu bar utility that lets you quickly take screenshots and automatically invert their colors.  
+Perfect for designers or developers who frequently switch between light and dark content.
+
+## ✨ Features
+
+- **Global Shortcut:** Trigger instantly with `⌘⇧6` (Command + Shift + 6)
+- **Auto Invert:** Automatically inverts all colors after screenshot
+- **Clipboard Integration:** Processed image is automatically copied to the clipboard
+- **Notifications:** Sends a system notification when done
+- **Menu Bar Resident:** Stays quietly in the menu bar, not in the Dock
+- **Performance Optimized:** Asynchronous processing, no UI blocking
+
+## 📋 System Requirements
+
+- macOS 26 or later
+- Requires the following permissions:
+  - **Accessibility** (to monitor global hotkeys)
+  - **Screen Recording** (for screenshot functionality)
+
+## 🚀 Installation
+
+### Option 1: Download Prebuilt Release
+
+1. Download the latest `.dmg` file from the [Releases] page  
+2. Open the `.dmg` and drag **Blackshot** into your Applications folder  
+3. On first launch, grant the required system permissions as prompted
+
+### Option 2: Build from Source
+
+```bash
+# Clone the repository
+git clone https://github.com/Harmonese/blackshot.git
+cd blackshot
+
+# Open in Xcode
+open Blackshot.xcodeproj
+
+# Build and Run
+````
+
+## 🎯 Usage
+
+### Basic Usage
+
+1. Launch Blackshot — a camera icon appears in the menu bar
+2. Press `⌘⇧6`
+3. Select a capture area using macOS’s native screenshot tool
+4. The image is automatically inverted and copied to clipboard
+5. Paste anywhere with `⌘V`
+
+### Menu Options
+
+* **Capture & Invert (⌘⇧6)** – Trigger manually
+* **Check Permissions** – Verify system permissions
+* **Quit** – Exit the app
+
+## 🔐 Permissions
+
+When first launched, Blackshot automatically checks for the following permissions and prompts you to grant them:
+
+### Accessibility
+
+1. Go to **System Settings → Privacy & Security → Accessibility**
+2. Enable **Blackshot**
+
+### Screen Recording
+
+1. Go to **System Settings → Privacy & Security → Screen Recording**
+2. Enable **Blackshot**
+
+> 💡 Restart the app after granting permissions if needed.
+
+## 📄 License
+
+Licensed under the MIT License – see the [LICENSE](LICENSE) file for details.
+
+## 👤 Author
+
+[@Harmonese](https://github.com/Harmonese)
+
+---
+
+# Blackshot 中文版
+
+<div align="center">
+  <img src="./icon.png" alt="Blackshot Icon" width="128">
+</div>
+
+<div align="center">
   <img src="https://img.shields.io/badge/platform-macOS%2026%2B-blue" alt="Platform">
   <img src="https://img.shields.io/badge/Swift-5.0-orange" alt="Swift">
   <img src="https://img.shields.io/badge/license-MIT-green" alt="License">
@@ -10,25 +114,26 @@
 
 ## ✨ 功能特性
 
--  **全局快捷键**: 使用 `⌘⇧6` (Command + Shift + 6) 快速触发
--  **自动反转**: 截图后自动反转所有颜色
-- **剪贴板集成**: 处理后的图片自动复制到剪贴板，随时可粘贴
-- **通知提醒**: 操作完成后发送系统通知
-- **菜单栏常驻**: 简洁的菜单栏图标，不占用 Dock 空间
-- **性能优化**: 异步处理，不影响系统响应速度
+* **全局快捷键**: 使用 `⌘⇧6` (Command + Shift + 6) 快速触发
+* **自动反转**: 截图后自动反转所有颜色
+* **剪贴板集成**: 处理后的图片自动复制到剪贴板，随时可粘贴
+* **通知提醒**: 操作完成后发送系统通知
+* **菜单栏常驻**: 简洁的菜单栏图标，不占用 Dock 空间
+* **性能优化**: 异步处理，不影响系统响应速度
 
 ## 📋 系统要求
 
-- macOS 26 或更高版本
-- 需要授予以下权限：
-  - **辅助功能权限** (用于监听全局快捷键)
-  - **屏幕录制权限** (用于截图功能)
+* macOS 26 或更高版本
+* 需要授予以下权限：
+
+  * **辅助功能权限** (用于监听全局快捷键)
+  * **屏幕录制权限** (用于截图功能)
 
 ## 🚀 安装
 
 ### 方式一：下载预编译版本
 
-1. 从 [Releases] 页面下载最新版本的 `.dmg` 文件
+1. 从 \[Releases] 页面下载最新版本的 `.dmg` 文件
 2. 打开 `.dmg` 文件，将 Blackshot 拖入应用程序文件夹
 3. 首次运行时，按照提示授予必要的系统权限
 
@@ -57,19 +162,21 @@ open Blackshot.xcodeproj
 
 ### 菜单选项
 
-- **截图并反色 (⌘⇧6)**: 手动触发截图功能
-- **检查权限**: 验证应用所需的系统权限是否已授予
-- **退出**: 关闭应用
+* **截图并反色 (⌘⇧6)**: 手动触发截图功能
+* **检查权限**: 验证应用所需的系统权限是否已授予
+* **退出**: 关闭应用
 
 ## 🔐 权限设置
 
 首次运行时，Blackshot 会自动检测并提示授予以下权限：
 
 ### 辅助功能权限
+
 1. 打开 **系统设置** > **隐私与安全性** > **辅助功能**
 2. 找到并勾选 **Blackshot**
 
 ### 屏幕录制权限
+
 1. 打开 **系统设置** > **隐私与安全性** > **屏幕录制**
 2. 找到并勾选 **Blackshot**
 
@@ -88,3 +195,4 @@ open Blackshot.xcodeproj
 <div align="center">
 Made with ❤️ for macOS
 </div>
+```
