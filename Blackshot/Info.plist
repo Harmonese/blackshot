@@ -2,9 +2,14 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<!-- 中文权限说明 -->
 	<key>NSAccessibilityUsageDescription</key>
-	<string>Blackshot 需要辅助功能权限来监听全局快捷键</string>
+	<string>Blackshot 需要辅助功能权限来监听全局快捷键 (⌘⇧6)</string>
 	<key>NSScreenCaptureUsageDescription</key>
-	<string>Blackshot 需要屏幕录制权限来捕获截图</string>
+	<string>Blackshot 需要屏幕录制权限来捕获和处理截图</string>
+	
+	<!-- 英文权限说明 (系统语言为英文时显示) -->
+	<key>NSHumanReadableCopyright</key>
+	<string>Copyright © 2025. All rights reserved.</string>
 </dict>
 </plist>

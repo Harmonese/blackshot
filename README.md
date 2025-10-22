@@ -98,7 +98,7 @@ Licensed under the MIT License – see the [LICENSE](LICENSE) file for details.
 
 ---
 
-# Blackshot 中文版
+# Blackshot
 
 <div align="center">
   <img src="./icon.png" alt="Blackshot Icon" width="128">

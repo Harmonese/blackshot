@@ -2,6 +2,7 @@ import SwiftUI
 import AppKit
 import UserNotifications
 import CoreGraphics
+import Combine  // ✅ 添加这个导入！
 
 @main
 struct BlackshotApp: App {
@@ -12,9 +13,129 @@ struct BlackshotApp: App {
     }
 }
 
+// MARK: - Language Manager
+class LanguageManager: ObservableObject {
+    static let shared = LanguageManager()
+    
+    enum Language: String {
+        case chinese = "zh-Hans"
+        case english = "en"
+        
+        var displayName: String {
+            switch self {
+            case .chinese: return "中文"
+            case .english: return "English"
+            }
+        }
+    }
+    
+    @Published var currentLanguage: Language {
+        didSet {
+            UserDefaults.standard.set(currentLanguage.rawValue, forKey: "AppLanguage")
+            NotificationCenter.default.post(name: .languageChanged, object: nil)
+        }
+    }
+    
+    private init() {
+        if let saved = UserDefaults.standard.string(forKey: "AppLanguage"),
+           let lang = Language(rawValue: saved) {
+            self.currentLanguage = lang
+        } else {
+            // 默认根据系统语言
+            let systemLang = Locale.preferredLanguages.first ?? "en"
+            self.currentLanguage = systemLang.hasPrefix("zh") ? .chinese : .english
+        }
+    }
+    
+    func localized(_ key: String) -> String {
+        return LocalizedStrings.get(key, language: currentLanguage)
+    }
+}
+
+extension Notification.Name {
+    static let languageChanged = Notification.Name("LanguageChanged")
+}
+
+// MARK: - Localized Strings
+struct LocalizedStrings {
+    static func get(_ key: String, language: LanguageManager.Language) -> String {
+        switch language {
+        case .chinese:
+            return chineseStrings[key] ?? key
+        case .english:
+            return englishStrings[key] ?? key
+        }
+    }
+    
+    private static let chineseStrings: [String: String] = [
+        // Menu
+        "app.name": "Blackshot",
+        "menu.screenshot": "截图并反色 (⌘⇧6)",
+        "menu.checkPermissions": "检查权限",
+        "menu.language": "语言 / Language",
+        "menu.quit": "退出",
+        
+        // Permissions
+        "permission.needed.title": "需要授予权限",
+        "permission.needed.message": "Blackshot 需要以下权限才能正常工作:\n\n%@\n\n点击\"打开系统设置\"前往授权页面。",  // ✅ 修复引号
+        "permission.accessibility": "辅助功能",
+        "permission.screenRecording": "屏幕录制",
+        "permission.openSettings": "打开系统设置",
+        "permission.later": "稍后",
+        
+        "permission.success.title": "权限检查通过 ✅",
+        "permission.success.message": "所有必需权限已授予：\n\n✓ 辅助功能\n✓ 屏幕录制\n\nBlackshot 可以正常使用。",
+        "permission.success.ok": "好的",
+        
+        // Hotkey
+        "hotkey.failed.title": "无法注册全局快捷键",
+        "hotkey.failed.message": "请在 辅助功能 权限中允许 Blackshot。",
+        
+        // Screenshot
+        "screenshot.success.title": "Blackshot",
+        "screenshot.success.message": "反色截图已复制到剪贴板 ✅",
+        "screenshot.failed.title": "截图失败",
+        "screenshot.copy.failed.title": "复制失败",
+        "screenshot.copy.failed.message": "无法写入剪贴板",
+    ]
+    
+    private static let englishStrings: [String: String] = [
+        // Menu
+        "app.name": "Blackshot",
+        "menu.screenshot": "Screenshot & Invert (⌘⇧6)",
+        "menu.checkPermissions": "Check Permissions",
+        "menu.language": "Language / 语言",
+        "menu.quit": "Quit",
+        
+        // Permissions
+        "permission.needed.title": "Permissions Required",
+        "permission.needed.message": "Blackshot needs the following permissions to work properly:\n\n%@\n\nClick \"Open System Settings\" to grant permissions.",
+        "permission.accessibility": "Accessibility",
+        "permission.screenRecording": "Screen Recording",
+        "permission.openSettings": "Open System Settings",
+        "permission.later": "Later",
+        
+        "permission.success.title": "Permissions Granted ✅",
+        "permission.success.message": "All required permissions have been granted:\n\n✓ Accessibility\n✓ Screen Recording\n\nBlackshot is ready to use.",
+        "permission.success.ok": "OK",
+        
+        // Hotkey
+        "hotkey.failed.title": "Cannot Register Global Hotkey",
+        "hotkey.failed.message": "Please allow Blackshot in Accessibility permissions.",
+        
+        // Screenshot
+        "screenshot.success.title": "Blackshot",
+        "screenshot.success.message": "Inverted screenshot copied to clipboard ✅",
+        "screenshot.failed.title": "Screenshot Failed",
+        "screenshot.copy.failed.title": "Copy Failed",
+        "screenshot.copy.failed.message": "Unable to write to clipboard",
+    ]
+}
+
 // MARK: - AppDelegate
 class AppDelegate: NSObject, NSApplicationDelegate {
     var statusItem: NSStatusItem?
+    private let langManager = LanguageManager.shared
     
     func applicationDidFinishLaunching(_ notification: Notification) {
         // 禁用系统调试日志(Release 构建推荐)
@@ -25,6 +146,18 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         setupStatusBar()
         checkPermissions(showSuccessAlert: false)
         HotkeyTap.shared.start()
+        
+        // 监听语言切换
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(languageChanged),
+            name: .languageChanged,
+            object: nil
+        )
+    }
+    
+    @objc func languageChanged() {
+        setupStatusBar() // 重建菜单
     }
     
     func setupStatusBar() {
@@ -33,15 +166,40 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             button.image = NSImage(systemSymbolName: "camera.fill", accessibilityDescription: "Blackshot")
             button.image?.isTemplate = true
         }
+        
         let menu = NSMenu()
-        menu.addItem(NSMenuItem(title: "Blackshot", action: nil, keyEquivalent: ""))
+        menu.addItem(NSMenuItem(title: langManager.localized("app.name"), action: nil, keyEquivalent: ""))
         menu.addItem(.separator())
-        menu.addItem(NSMenuItem(title: "截图并反色 (⌘⇧6)", action: #selector(triggerScreenshot), keyEquivalent: ""))
+        menu.addItem(NSMenuItem(title: langManager.localized("menu.screenshot"), action: #selector(triggerScreenshot), keyEquivalent: ""))
         menu.addItem(.separator())
-        menu.addItem(NSMenuItem(title: "检查权限", action: #selector(checkPermissionsManually), keyEquivalent: ""))
+        menu.addItem(NSMenuItem(title: langManager.localized("menu.checkPermissions"), action: #selector(checkPermissionsManually), keyEquivalent: ""))
         menu.addItem(.separator())
-        menu.addItem(NSMenuItem(title: "退出", action: #selector(quitApp), keyEquivalent: "q"))
+        
+        // 语言切换子菜单
+        let languageMenu = NSMenu()
+        let chineseItem = NSMenuItem(title: LanguageManager.Language.chinese.displayName, action: #selector(switchToChinese), keyEquivalent: "")
+        chineseItem.state = langManager.currentLanguage == .chinese ? .on : .off
+        languageMenu.addItem(chineseItem)
+        
+        let englishItem = NSMenuItem(title: LanguageManager.Language.english.displayName, action: #selector(switchToEnglish), keyEquivalent: "")
+        englishItem.state = langManager.currentLanguage == .english ? .on : .off
+        languageMenu.addItem(englishItem)
+        
+        let languageMenuItem = NSMenuItem(title: langManager.localized("menu.language"), action: nil, keyEquivalent: "")
+        languageMenuItem.submenu = languageMenu
+        menu.addItem(languageMenuItem)
+        
+        menu.addItem(.separator())
+        menu.addItem(NSMenuItem(title: langManager.localized("menu.quit"), action: #selector(quitApp), keyEquivalent: "q"))
         statusItem?.menu = menu
+    }
+    
+    @objc func switchToChinese() {
+        langManager.currentLanguage = .chinese
+    }
+    
+    @objc func switchToEnglish() {
+        langManager.currentLanguage = .english
     }
     
     @objc func triggerScreenshot() { ScreenshotManager.shared.captureAndInvert() }
@@ -61,26 +219,21 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         var missingPermissions: [String] = []
         if !hasAccessibility {
-            missingPermissions.append("辅助功能")
+            missingPermissions.append(langManager.localized("permission.accessibility"))
         }
         if !hasScreenRecording {
-            missingPermissions.append("屏幕录制")
+            missingPermissions.append(langManager.localized("permission.screenRecording"))
         }
         
         if !missingPermissions.isEmpty {
             DispatchQueue.main.async {
                 let alert = NSAlert()
-                alert.messageText = "需要授予权限"
-                alert.informativeText = """
-                Blackshot 需要以下权限才能正常工作:
-                
-                \(missingPermissions.joined(separator: "、"))
-                
-                点击"打开系统设置"前往授权页面。
-                """
+                alert.messageText = self.langManager.localized("permission.needed.title")
+                alert.informativeText = String(format: self.langManager.localized("permission.needed.message"),
+                                               missingPermissions.joined(separator: self.langManager.currentLanguage == .chinese ? "、" : ", "))
                 alert.alertStyle = .warning
-                alert.addButton(withTitle: "打开系统设置")
-                alert.addButton(withTitle: "稍后")
+                alert.addButton(withTitle: self.langManager.localized("permission.openSettings"))
+                alert.addButton(withTitle: self.langManager.localized("permission.later"))
                 
                 let response = alert.runModal()
                 if response == .alertFirstButtonReturn {
@@ -88,48 +241,30 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 }
             }
         } else if showSuccessAlert {
-            // 只有手动检查时才显示权限完备提示
             DispatchQueue.main.async {
                 let alert = NSAlert()
-                alert.messageText = "权限检查通过 ✅"
-                alert.informativeText = """
-                所有必需权限已授予：
-                
-                ✓ 辅助功能
-                ✓ 屏幕录制
-                
-                Blackshot 可以正常使用。
-                """
+                alert.messageText = self.langManager.localized("permission.success.title")
+                alert.informativeText = self.langManager.localized("permission.success.message")
                 alert.alertStyle = .informational
-                alert.addButton(withTitle: "好的")
+                alert.addButton(withTitle: self.langManager.localized("permission.success.ok"))
                 alert.runModal()
             }
         }
     }
     
     private func checkScreenRecordingPermission() -> Bool {
-        // macOS 上没有直接的 API 检测屏幕录制权限状态
-        // 最佳实践：尝试执行一次轻量级截图测试
-        
-        // 方法1: 检查临时截图是否能成功创建
         let testPath = NSTemporaryDirectory() + "blackshot_permission_test.png"
         let task = Process()
         task.executableURL = URL(fileURLWithPath: "/usr/sbin/screencapture")
-        task.arguments = ["-x", "-t", "png", "-R", "0,0,1,1", testPath] // 只捕获1x1像素
+        task.arguments = ["-x", "-t", "png", "-R", "0,0,1,1", testPath]
         task.standardOutput = Pipe()
         task.standardError = Pipe()
         
         do {
             try task.run()
             task.waitUntilExit()
-            
-            // 检查文件是否创建成功
             let fileExists = FileManager.default.fileExists(atPath: testPath)
-            
-            // 清理测试文件
             try? FileManager.default.removeItem(atPath: testPath)
-            
-            // 如果退出码为0且文件存在，说明有权限
             return task.terminationStatus == 0 && fileExists
         } catch {
             return false
@@ -137,12 +272,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     private func openSystemPreferences(for permissions: [String]) {
-        if permissions.contains("辅助功能") {
-            // 打开辅助功能设置
+        let accessibilityName = langManager.localized("permission.accessibility")
+        let screenRecordingName = langManager.localized("permission.screenRecording")
+        
+        if permissions.contains(accessibilityName) {
             let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility")!
             NSWorkspace.shared.open(url)
-        } else if permissions.contains("屏幕录制") {
-            // 打开屏幕录制设置
+        } else if permissions.contains(screenRecordingName) {
             let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_ScreenCapture")!
             NSWorkspace.shared.open(url)
         }
@@ -154,7 +290,7 @@ final class HotkeyTap {
     static let shared = HotkeyTap()
     private var eventTap: CFMachPort?
     private var runloopSource: CFRunLoopSource?
-    private let keycode6: Int64 = 22 // ANSI 6 键位
+    private let keycode6: Int64 = 22
 
     func start() {
         let mask = (1 << CGEventType.keyDown.rawValue)
@@ -181,8 +317,8 @@ final class HotkeyTap {
         guard let tap = eventTap else {
             DispatchQueue.main.async {
                 let alert = NSAlert()
-                alert.messageText = "无法注册全局快捷键"
-                alert.informativeText = "请在 辅助功能 权限中允许 Blackshot。"
+                alert.messageText = LanguageManager.shared.localized("hotkey.failed.title")
+                alert.informativeText = LanguageManager.shared.localized("hotkey.failed.message")
                 alert.runModal()
             }
             return
@@ -203,7 +339,9 @@ final class HotkeyTap {
 
 // MARK: - Screenshot Manager
 class ScreenshotManager {
-    static let shared = ScreenshotManager(); private init() {}
+    static let shared = ScreenshotManager()
+    private init() {}
+    private let langManager = LanguageManager.shared
     
     func captureAndInvert() {
         let tmpURL = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("blackshot_temp.png")
@@ -223,7 +361,7 @@ class ScreenshotManager {
                 }
             }
         } catch {
-            self.showError("截图失败", message: error.localizedDescription)
+            self.showError(langManager.localized("screenshot.failed.title"), message: error.localizedDescription)
         }
     }
     
@@ -233,9 +371,11 @@ class ScreenshotManager {
             cleanup(url); return
         }
         if copyToClipboard(inv) {
-            showNotification(title: "Blackshot", message: "反色截图已复制到剪贴板 ✅")
+            showNotification(title: langManager.localized("screenshot.success.title"),
+                           message: langManager.localized("screenshot.success.message"))
         } else {
-            showError("复制失败", message: "无法写入剪贴板")
+            showError(langManager.localized("screenshot.copy.failed.title"),
+                     message: langManager.localized("screenshot.copy.failed.message"))
         }
         DispatchQueue.global().asyncAfter(deadline: .now() + 5) { self.cleanup(url) }
     }
@@ -278,7 +418,8 @@ class ScreenshotManager {
 
     func showNotification(title: String, message: String) {
         let content = UNMutableNotificationContent()
-        content.title = title; content.body = message
+        content.title = title
+        content.body = message
         UNUserNotificationCenter.current().add(
             UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
         )
@@ -286,8 +427,10 @@ class ScreenshotManager {
     
     func showError(_ title: String, message: String) {
         DispatchQueue.main.async {
-            let alert = NSAlert(); alert.messageText = title
-            alert.informativeText = message; alert.runModal()
+            let alert = NSAlert()
+            alert.messageText = title
+            alert.informativeText = message
+            alert.runModal()
         }
     }
 }
