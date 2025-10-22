@@ -189,10 +189,3 @@ open Blackshot.xcodeproj
 ## 👤 作者
 
 [@Harmonese](https://github.com/Harmonese)
-
----
-
-<div align="center">
-Made with ❤️ for macOS
-</div>
-```
