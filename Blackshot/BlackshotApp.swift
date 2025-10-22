@@ -409,9 +409,38 @@ class ScreenshotManager {
         guard let tiff = image.tiffRepresentation,
               let bmp = NSBitmapImageRep(data: tiff),
               let png = bmp.representation(using: .png, properties: [:]) else { return false }
+        
+        // 生成 macOS 风格的文件名
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd 'at' HH.mm.ss"
+        let timestamp = dateFormatter.string(from: Date())
+        let filename = "Screenshot \(timestamp).png"
+        
+        // 创建临时文件用于提供文件承诺
+        let tempDir = FileManager.default.temporaryDirectory
+        let fileURL = tempDir.appendingPathComponent(filename)
+        
+        do {
+            try png.write(to: fileURL)
+        } catch {
+            return false
+        }
+        
         let pb = NSPasteboard.general
         pb.clearContents()
-        return pb.setData(png, forType: .png)
+        
+        // 同时提供多种格式以兼容不同应用
+        pb.declareTypes([.fileURL, .png, .tiff], owner: nil)
+        pb.setData(png, forType: .png)
+        pb.setData(tiff, forType: .tiff)
+        pb.writeObjects([fileURL as NSURL])
+        
+        // 5秒后清理临时文件
+        DispatchQueue.global().asyncAfter(deadline: .now() + 5) {
+            try? FileManager.default.removeItem(at: fileURL)
+        }
+        
+        return true
     }
     
     func cleanup(_ url: URL) { try? FileManager.default.removeItem(at: url) }
