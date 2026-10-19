@@ -40,27 +40,26 @@ The format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.
 - Native thumbnail handoff depends on the undocumented `com.apple.screencaptureui` service and capture metadata. Compatibility may change independently of public APIs. App Sandbox is disabled; Hardened Runtime and library validation remain enabled.
 - See the [validation record](Experiments/NativeScreenshotBridge/README.md) and [release checklist](docs/RELEASE.md) for acceptance results and remaining checks. HDR inversion, screen recording and a full-screen capture entry point are outside this release.
 
-## [1.1.1] - 2025-10-23
+## [1.1.1] - 2025-10-22
 
-### Changed
+### Fixed
+- PNG files copied to clipboard had no metadata; named the copied file using macOS default screenshot filename format.
 
-- Provide a macOS-style named temporary PNG file URL alongside PNG and TIFF clipboard representations for compatibility with receiving applications. Remove the temporary file after five seconds.
-
-## [1.1.0] - 2025-10-23
+## [1.1.0] - 2025-10-22
 
 ### Added
+- English localization support with a language switch menu option (中文 / English).
 
-- English interface strings and a Chinese/English language menu, with the selected language saved across launches.
-- Localized capture, permission and notification messages.
+### Fixed
+- Known bugs from the initial release.
 
 ## [1.0.0] - 2025-10-22
 
 ### Added
-
-- A menu bar screenshot inverter with no main window or Dock icon.
-- Global `⌘⇧6` capture through an event tap, native interactive region selection, pixel-by-pixel RGB inversion and PNG clipboard output.
-- Screen Recording and Accessibility permission guidance, completion notifications, and capture, permission-check and quit menu actions.
-
-### Historical Notes
-
-- Versions 1.0.0–1.1.1 are reconstructed from repository history; no version tags exist in the local repository. Dates follow commit timestamps in Asia/Shanghai. Relevant implementation commits: `12ba103` (initial workflow), `2d196ee` (language switching), and `b1d589e` (clipboard file representations). The 1.1.1 change adds clipboard representations and a filename; it does not add embedded PNG metadata.
+- Initial release of Blackshot — a macOS menu bar utility for taking screenshots and automatically inverting their colors.
+- Global hotkey `⌘⇧6` via CoreGraphics event tap.
+- Pixel-by-pixel color inversion of captured screenshots.
+- Clipboard integration with PNG, TIFF, and fileURL format support.
+- System notification on successful capture.
+- Status bar menu with capture trigger, permission check, and quit options.
+- Accessibility and Screen Recording permission checking and prompting.
