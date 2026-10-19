@@ -1,65 +1,199 @@
 # Blackshot
 
-<img src="./icon.png" alt="Blackshot" width="96">
+<div align="center">
+  <img src="./icon.png" alt="Blackshot Icon" width="128">
+</div>
 
-macOS 菜单栏截图工具：**原生选区 / 窗口截图 → 自动反色 → 系统原生缩略图、标注和保存**。
+<div align="center">
+  <img src="https://img.shields.io/badge/platform-macOS%2012%2B-blue" alt="Platform">
+  <img src="https://img.shields.io/badge/Swift-5.0-orange" alt="Swift">
+  <img src="https://img.shields.io/badge/license-MIT-green" alt="License">
+</div>
 
-当前准备版本：**1.2.0**。系统要求：**macOS 12 Monterey 或更新版本，Apple Silicon**。旧系统兼容性基于接口与构建检查推断，目前已在 macOS 27.2 实测。
+> **English | [中文说明](#blackshot-中文版)**
 
-## 使用
+---
 
-1. 启动 Blackshot；应用只驻留菜单栏，不显示主窗口或 Dock 图标。
-2. 按 `⌘⇧6`，拖动选择截图区域。可按空格切换窗口截图，按 Option 去掉窗口阴影，按 Esc 取消。
-3. 图片自动反色，随后由 macOS 显示原生浮动缩略图。可点击标注、拖拽、右键复制或删除。
-4. 保存位置和缩略图开关沿用系统截图设置（`⌘⇧5` → 选项）。Blackshot 不修改这些设置，也不额外自动复制或发送成功通知。
+## 🪶 Overview
 
-按 `⌃⌘⇧6`，或在选区完成时按住 Control 松开鼠标，可直接得到剪贴板中的反色图片；此时不额外显示缩略图。取消截图不会提前清空剪贴板。
+**Blackshot** is a lightweight macOS menu bar utility that lets you quickly take screenshots and automatically invert their colors.
+Perfect for designers or developers who frequently switch between light and dark content.
 
-## 菜单
+## ✨ Features
 
-- **截图并反色**：进入系统截图。
-- **快捷键设置…**：点击录入框并按新组合，立即保存；可恢复默认。基础组合必须包含 Command，可配合 Shift、Option；Control 专用于复制分支。注册冲突时保留原快捷键。
-- **恢复最近截图…**：有恢复数据时出现，提供复制、另存和丢弃。只保留最近一张反色图片，最长 24 小时，不建立截图历史。
-- **检查权限**、**语言**（英文界面显示 **Language**）、**退出**。
+- **Global Shortcut:** Trigger with `⌘⇧6` (Command + Shift + 6), or set your own shortcut
+- **Auto Invert:** Automatically inverts all colors after screenshot
+- **Clipboard Integration:** Hold Control with the shortcut or when completing a selection to copy the inverted image
+- **Native Screenshot Workflow:** Use the macOS thumbnail to mark up, drag, copy, delete or save the inverted screenshot
+- **Recovery:** Recover the latest inverted screenshot for up to 24 hours
+- **Menu Bar Resident:** Stays quietly in the menu bar, not in the Dock
+- **Performance Optimized:** Asynchronous processing, no UI blocking
 
-首次截图需要**屏幕录制权限**。在系统设置 → 隐私与安全性 → 屏幕与系统音频录制中允许 Blackshot，随后重启应用。不需要辅助功能和通知权限。
+## 📋 System Requirements
 
-如果已允许却仍无法截图，请检查授权项是否指向旧版应用：右键 Blackshot → 在访达中显示。移除旧授权项，通过“＋”重新添加当前 `build/Blackshot.app`，允许后退出并重新打开这份应用。测试期间请始终启动同一路径的应用，避免混用旧的 Xcode 构建。
+- macOS 12 Monterey or later on Apple Silicon (arm64)
+- Requires the following permissions:
+  - **Screen Recording** (for screenshot functionality)
 
-## 当前支持情况
+> Tested on macOS 27.2. macOS 12–26 compatibility is inferred and awaits user feedback. Native thumbnail integration uses an undocumented system interface.
 
-- 最低构建目标：macOS 12.0，架构 arm64；macOS 12–26 预计兼容，尚未实测。本次实际验证：macOS 27.2（26B5112a）、Apple Silicon、内置 2× 屏幕。
-- 输出为 SDR PNG，RGB 反色，保留透明度、像素尺寸和 DPI；暂不支持 HDR 反色、全屏截图入口或录屏。
-- 已在独立原型验证：原生缩略图、标注保存、窗口截图拖拽与阴影、两种 Control 用法、右键复制及删除。右键复制后的图片与输入反色图逐像素一致。
-- 已在签名的正式应用验证：默认快捷键进入系统选区，完成后出现反色原生缩略图；Esc 取消保留剪贴板；两种 Control 用法均复制反色图片。旧授权记录问题通过重新添加当前应用解决。
-- 正式应用的快捷键修改、重启记忆、恢复默认，以及最近截图恢复复制均已通过交互验证。
-- macOS 12–26、外接屏幕和混合缩放仍待验证；Intel 版本暂不提供。最终应用的交互验收及权限状态见 [验证记录](Experiments/NativeScreenshotBridge/README.md)。
+## 🚀 Installation
 
-**此版本调用系统内部截图服务 `com.apple.screencaptureui`，没有公开兼容性承诺。** 当前预发布包使用 Apple Development 签名，尚未公证；其他 Mac 的首次启动可能被 Gatekeeper 阻止。关闭 App Sandbox，保留 Hardened Runtime；不是 Mac App Store 发行方案。不修改或注入系统进程，不关闭系统保护。
+### Option 1: Download Prebuilt Release
 
-服务没有可靠的保存成功回执。Blackshot 不自动重试或重复保存；如果没有出现预期结果，可从菜单恢复最近截图。仅凭 `Connection interrupted` 不能判断交接失败。
+1. Download the macOS arm64 `.zip` from [Releases](https://github.com/Harmonese/blackshot/releases)
+2. Extract the `.zip` and move **Blackshot.app** into your Applications folder
+3. On first capture, grant Screen Recording permission as prompted
 
-## 构建与验证
+> The current build uses Apple Development signing and is not notarized. macOS may block first launch on another Mac.
 
-无第三方依赖，使用 Xcode 与 Apple 框架：
+### Option 2: Build from Source
 
-```sh
-xcodebuild -project Blackshot.xcodeproj -scheme Blackshot -configuration Debug -destination 'platform=macOS' build
-xcodebuild -project Blackshot.xcodeproj -scheme Blackshot -configuration Release -destination 'platform=macOS' build
-./Experiments/NativeScreenshotBridge/validate.sh --self-test
-./Experiments/NativeScreenshotBridge/validate.sh --capture
+```bash
+# Clone the repository
+git clone https://github.com/Harmonese/blackshot.git
+cd blackshot
+
+# Open in Xcode
+open Blackshot.xcodeproj
+
+# Build and Run
 ```
 
-构建需本机有效的 Apple Development 签名配置。本地测试应用位于 `build/Blackshot.app`；预发布 ZIP 和 SHA-256 校验文件位于 `build/releases/`，均不进入 Git。分发签名、公证和发布步骤见 [发布准备](docs/RELEASE.md)，版本改动见 [CHANGELOG](CHANGELOG.md)。
+## 🎯 Usage
 
-## English
+### Basic Usage
 
-Blackshot stays in the menu bar. Press `⌘⇧6` to select a region, or Space to capture a window. It inverts the screenshot and hands it to the native macOS screenshot UI for thumbnails, markup, drag and drop, copying, deletion, and saving. Native screenshot preferences apply.
+1. Launch Blackshot — a camera icon appears in the menu bar
+2. Press `⌘⇧6`
+3. Select an area using macOS’s native screenshot tool; press Space to capture a window or Esc to cancel
+4. The image is automatically inverted and handed to the native macOS screenshot thumbnail
+5. Click the thumbnail to mark up, drag it elsewhere, or use its menu to copy, delete or save
 
-Use Control with the shortcut, or hold Control when completing the selection, to copy the inverted screenshot directly. Choose Shortcut Settings… to change the shortcut; Command is required and Control is reserved for copying. Recover Latest Screenshot… keeps one inverted result for up to 24 hours.
+Hold Control with the shortcut or when completing the selection to copy directly, then paste with `⌘V`. Save location and thumbnail visibility follow the system screenshot options (`⌘⇧5`).
 
-Screen Recording permission is required; Accessibility and notification permissions are not. Version 1.2.0 targets macOS 12 or newer on Apple Silicon (arm64). Compatibility with macOS 12–26 is inferred from API availability and build checks; only macOS 27.2 has been tested interactively. Intel Macs, external displays and mixed display scales remain unverified. This build relies on an undocumented native service, runs outside App Sandbox with Hardened Runtime, and outputs SDR PNG. The local prerelease uses Apple Development signing and is not notarized; Gatekeeper may block it on another Mac. See the [release checklist](docs/RELEASE.md) and [changelog](CHANGELOG.md).
+### Menu Options
 
-## License
+* **Capture & Invert (⌘⇧6)** – Trigger manually
+* **Shortcut Settings…** – Change the shortcut or restore the default
+* **Recover Latest Screenshot…** – Copy, save or discard the latest inverted image; shown when recovery is available
+* **Check Permissions** – Verify Screen Recording permission
+* **Language** – Switch between English and Chinese
+* **Quit** – Exit the app
 
-MIT. See [LICENSE](LICENSE). Author: [Harmonese](https://github.com/Harmonese).
+## 🔐 Permissions
+
+Blackshot requires Screen Recording permission for capture. Accessibility and notification permissions are not required.
+
+### Screen Recording
+
+1. Go to **System Settings → Privacy & Security → Screen Recording**
+2. Enable **Blackshot**
+
+> 💡 Restart the app after granting permission. If access is enabled but capture still fails, remove the stale Blackshot permission entry, add the installed app again and restart.
+
+## 📄 License
+
+Licensed under the MIT License – see the [LICENSE](LICENSE) file for details.
+
+## 👤 Author
+
+[@Harmonese](https://github.com/Harmonese)
+
+---
+
+# Blackshot 中文版
+
+<div align="center">
+  <img src="./icon.png" alt="Blackshot Icon" width="128">
+</div>
+
+<div align="center">
+  <img src="https://img.shields.io/badge/platform-macOS%2012%2B-blue" alt="Platform">
+  <img src="https://img.shields.io/badge/Swift-5.0-orange" alt="Swift">
+  <img src="https://img.shields.io/badge/license-MIT-green" alt="License">
+</div>
+
+一个轻量级的 macOS 菜单栏工具，让你快速截图并自动反转颜色。完美适用于需要在深色和浅色内容之间切换的场景。
+
+## ✨ 功能特性
+
+* **全局快捷键**: 使用 `⌘⇧6` (Command + Shift + 6) 快速触发，也可自定义组合
+* **自动反转**: 截图后自动反转所有颜色
+* **剪贴板集成**: 触发快捷键或完成选区时按住 Control，直接复制反色图片
+* **原生截图流程**: 通过 macOS 原生缩略图标注、拖拽、复制、删除和保存反色图片
+* **最近截图恢复**: 最近一张反色结果最多保留 24 小时，可手动恢复
+* **菜单栏常驻**: 简洁的菜单栏图标，不占用 Dock 空间
+* **性能优化**: 异步处理，不影响系统响应速度
+
+## 📋 系统要求
+
+* macOS 12 Monterey 或更高版本，Apple Silicon (arm64)
+* 需要授予以下权限：
+
+  * **屏幕录制权限** (用于截图功能)
+
+> 已在 macOS 27.2 实测；macOS 12–26 为推断兼容，待用户反馈验证。原生缩略图交接使用系统内部接口。
+
+## 🚀 安装
+
+### 方式一：下载预编译版本
+
+1. 从 [Releases](https://github.com/Harmonese/blackshot/releases) 页面下载 macOS arm64 `.zip` 文件
+2. 解压 `.zip`，将 **Blackshot.app** 移入应用程序文件夹
+3. 首次截图时，按照提示授予屏幕录制权限
+
+> 当前构建使用 Apple Development 签名，尚未公证，在其他 Mac 上首次启动可能被系统阻止。
+
+### 方式二：从源码编译
+
+```bash
+# 克隆仓库
+git clone https://github.com/Harmonese/blackshot.git
+cd blackshot
+
+# 使用 Xcode 打开项目
+open Blackshot.xcodeproj
+
+# 在 Xcode 中编译运行
+```
+
+## 🎯 使用方法
+
+### 基本使用
+
+1. 启动 Blackshot，应用会在菜单栏显示相机图标
+2. 按下 `⌘⇧6` 快捷键
+3. 使用系统截图工具选择区域；按空格切换窗口截图，按 Esc 取消
+4. 截图自动反色后，交由 macOS 原生缩略图处理
+5. 点击缩略图进行标注、拖到其他位置，或通过其菜单复制、删除和保存
+
+触发快捷键或完成选区时按住 Control，可直接复制，再按 `⌘V` 粘贴。保存位置和缩略图开关沿用系统截图选项（`⌘⇧5`）。
+
+### 菜单选项
+
+* **截图并反色 (⌘⇧6)**: 手动触发截图功能
+* **快捷键设置…**: 自定义快捷键或恢复默认
+* **恢复最近截图…**: 复制、另存或丢弃最近反色结果；有缓存时显示
+* **检查权限**: 检查屏幕录制权限
+* **语言**: 切换中文和英文
+* **退出**: 关闭应用
+
+## 🔐 权限设置
+
+Blackshot 仅需屏幕录制权限进行截图，不需要辅助功能或通知权限。
+
+### 屏幕录制权限
+
+1. 打开 **系统设置** > **隐私与安全性** > **屏幕录制**
+2. 找到并勾选 **Blackshot**
+
+> 💡 授予权限后，请重启应用。如果已允许却仍截图失败，请移除旧的 Blackshot 权限项，重新添加当前安装的应用并重启。
+
+## 📄 开源协议
+
+本项目采用 MIT 协议 - 查看 [LICENSE](LICENSE) 文件了解详情
+
+## 👤 作者
+
+[@Harmonese](https://github.com/Harmonese)

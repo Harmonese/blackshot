@@ -14,7 +14,6 @@ The format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.
 - A native shortcut settings panel with recording, persistence, restore default and conflict feedback. The base shortcut requires Command; Control is reserved for copying.
 - Copy-to-clipboard capture through either Control with the shortcut or Control held when completing a selection.
 - Recovery of the latest inverted screenshot with Copy, Save As and Discard. Keep one result for up to 24 hours, including across app restarts.
-- An independent native screenshot compatibility probe and checks for inversion, transparency, DPI, recovery and Carbon shortcut registration.
 
 ### Changed
 
@@ -35,10 +34,10 @@ The format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.
 
 ### Distribution Notes
 
-- This checkout prepares 1.2.0 (build 2); it has not yet been published. Local prerelease artifacts use Apple Development signing, not Developer ID distribution signing, and are not notarized. Gatekeeper may block first launch on another Mac.
+- Version 1.2.0 (build 2) artifacts use Apple Development signing, not Developer ID distribution signing, and are not notarized. Gatekeeper may block first launch on another Mac.
 - macOS 12–26 compatibility is inferred from public API availability and build checks. Interactive validation was performed on macOS 27.2 (26B5112a), Apple Silicon, with an internal 2× display. Older systems, external displays and mixed scales remain unverified; no Intel artifact is provided.
 - Native thumbnail handoff depends on the undocumented `com.apple.screencaptureui` service and capture metadata. Compatibility may change independently of public APIs. App Sandbox is disabled; Hardened Runtime and library validation remain enabled.
-- See the [validation record](Experiments/NativeScreenshotBridge/README.md) and [release checklist](docs/RELEASE.md) for acceptance results and remaining checks. HDR inversion, screen recording and a full-screen capture entry point are outside this release.
+- HDR inversion, screen recording and a full-screen capture entry point are outside this release.
 
 ## [1.1.1] - 2025-10-22
 

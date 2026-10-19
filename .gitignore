@@ -118,3 +118,8 @@ Temporary Items
 
 ## Claude Code
 CLAUDE.md
+
+# Local experiments, editor settings and release notes
+/Experiments/
+/.vscode/
+/docs/RELEASE.md
