@@ -19,6 +19,8 @@
 **Blackshot** is a lightweight macOS menu bar utility that lets you quickly take screenshots and automatically invert their colors.
 Perfect for designers or developers who frequently switch between light and dark content.
 
+This checkout prepares **1.2.1**. See the [changelog](CHANGELOG.md) for version history.
+
 ## ✨ Features
 
 - **Global Shortcut:** Trigger with `⌘⇧6` (Command + Shift + 6), or set your own shortcut
@@ -59,6 +61,8 @@ open Blackshot.xcodeproj
 
 # Build and Run
 ```
+
+The editable icon source is [icon.svg](icon.svg). Run `python3 scripts/generate-icons.py` to regenerate the PNG icons (Python 3.9+ and librsvg’s `rsvg-convert` are needed only for this development step). Agent guidance is in [AGENTS.md](AGENTS.md).
 
 ## 🎯 Usage
 
@@ -116,6 +120,8 @@ Licensed under the MIT License – see the [LICENSE](LICENSE) file for details.
 
 一个轻量级的 macOS 菜单栏工具，让你快速截图并自动反转颜色。完美适用于需要在深色和浅色内容之间切换的场景。
 
+当前准备版本为 **1.2.1**，版本记录见 [CHANGELOG](CHANGELOG.md)。
+
 ## ✨ 功能特性
 
 * **全局快捷键**: 使用 `⌘⇧6` (Command + Shift + 6) 快速触发，也可自定义组合
@@ -157,6 +163,8 @@ open Blackshot.xcodeproj
 
 # 在 Xcode 中编译运行
 ```
+
+图标的可编辑源文件为 [icon.svg](icon.svg)。运行 `python3 scripts/generate-icons.py` 可重新生成各尺寸 PNG（仅此开发步骤需要 Python 3.9+ 和 librsvg 的 `rsvg-convert`）。Agent 开发说明见 [AGENTS.md](AGENTS.md)。
 
 ## 🎯 使用方法
 

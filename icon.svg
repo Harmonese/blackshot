@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024" role="img" aria-labelledby="title desc">
+  <title id="title">Blackshot</title>
+  <desc id="desc">A dark camera with a yellow indicator, surrounded by four rounded capture corners on a charcoal background. Vector reconstruction of the original Blackshot icon.</desc>
+  <defs>
+    <linearGradient id="surface" x1="0" y1="209" x2="0" y2="783" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#32323a"/>
+      <stop offset="1" stop-color="#32333b"/>
+    </linearGradient>
+    <linearGradient id="lens" x1="0" y1="435" x2="0" y2="573" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#595961"/>
+      <stop offset="1" stop-color="#575760"/>
+    </linearGradient>
+    <linearGradient id="indicator" x1="608" y1="405" x2="649" y2="446" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#f2a51f"/>
+      <stop offset="1" stop-color="#eda01b"/>
+    </linearGradient>
+  </defs>
+
+  <rect id="background" width="1024" height="1024" fill="#17161c"/>
+
+  <!-- Capture corners: matched to the original 34 px round-ended strokes. -->
+  <g id="capture-frame" fill="none" stroke="url(#surface)" stroke-width="34" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M386 226H320C275.3 226 239 262.3 239 307V364"/>
+    <path d="M638 226H704C748.7 226 785 262.3 785 307V364"/>
+    <path d="M239 629V684C239 729.3 275.7 766 321 766H386"/>
+    <path d="M785 629V684C785 729.3 748.3 766 703 766H638"/>
+  </g>
+
+  <!-- Camera shoulder and body are one continuous silhouette. -->
+  <path fill="url(#surface)" d="M374 381H420C430 381 435 377 442 369L451 359C458 350 467 346 479 346H545C557 346 566 350 573 359L582 369C589 377 594 381 604 381H650C672 381 690 399 690 421V583C690 605 674 623 652 623H373C351 623 335 607 335 585V421C335 399 352 381 374 381Z"/>
+  <circle cx="512" cy="503.5" r="90.5" fill="#17161c"/>
+  <circle cx="512" cy="503.5" r="69" fill="url(#lens)"/>
+  <circle cx="628.5" cy="425.5" r="20.5" fill="url(#indicator)" stroke="#f9bd40" stroke-width="1"/>
+</svg>

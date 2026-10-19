@@ -6,6 +6,23 @@ The format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.
 
 ## [Unreleased]
 
+## [1.2.1] - 2026-10-20
+
+### Added
+
+- An editable SVG source for the existing icon design and a generator that renders every PNG size directly from that source.
+- Shared `AGENTS.md` development guidance, migrated from the local Claude-specific guide, including documentation and repository-scope conventions.
+
+### Changed
+
+- Regenerate the README image and all macOS app icon PNGs from the vector source, preserving the asset catalog's existing filenames and size mappings.
+- Keep local experiments, editor preferences and release working notes out of the repository. Restore the original bilingual README layout with current feature and installation details.
+
+### Distribution Notes
+
+- Version 1.2.1 (build 3) retains the macOS 12+ Apple Silicon target and the same screenshot implementation as 1.2.0. Only macOS 27.2 has interactive validation evidence; older systems and external/mixed-scale displays remain unverified.
+- Local release candidates use Apple Development signing and are not notarized. The undocumented native screenshot integration and distribution limitations described under 1.2.0 still apply.
+
 ## [1.2.0] - 2026-10-20
 
 ### Added
