@@ -45,3 +45,7 @@ Preserve the existing bilingual README layout, headings, badges and section orde
 ## Icon assets
 
 `icon.svg` is the editable vector source. Regenerate `icon.png` and all PNGs named by `Blackshot/Assets.xcassets/AppIcon.appiconset/Contents.json` with `python3 scripts/generate-icons.py`. This development command uses Python 3.9+ and `rsvg-convert` from librsvg; they are not app runtime dependencies. Render each pixel size directly from the SVG, keep the existing filenames and asset-catalog mapping, and do not hand-edit generated PNGs. The menu bar uses a separate system template symbol. Preserve the existing icon design unless a redesign is explicitly requested.
+
+## Release packaging
+
+Use DMG as the primary macOS release artifact, preserving the existing drag-to-Applications installation flow. Run `python3 scripts/package-dmg.py /path/to/Release/Blackshot.app` after building and signing Release. It creates a compressed DMG and checksum under `build/releases/`, verifies the image, mounts it read-only, checks the bundled app against the source and verifies its signature. ZIP may be offered as an additional format, not a replacement for DMG. The DMG format does not change the app’s signing or notarization status. Keep generated packages out of Git.

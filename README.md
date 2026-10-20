@@ -43,8 +43,8 @@ This checkout prepares **1.2.1**. See the [changelog](CHANGELOG.md) for version 
 
 ### Option 1: Download Prebuilt Release
 
-1. Download the macOS arm64 `.zip` from [Releases](https://github.com/Harmonese/blackshot/releases)
-2. Extract the `.zip` and move **Blackshot.app** into your Applications folder
+1. Download the macOS arm64 `.dmg` from [Releases](https://github.com/Harmonese/blackshot/releases)
+2. Open the `.dmg` and drag **Blackshot.app** into **Applications**
 3. On first capture, grant Screen Recording permission as prompted
 
 > The current build uses Apple Development signing and is not notarized. macOS may block first launch on another Mac.
@@ -145,8 +145,8 @@ Licensed under the MIT License – see the [LICENSE](LICENSE) file for details.
 
 ### 方式一：下载预编译版本
 
-1. 从 [Releases](https://github.com/Harmonese/blackshot/releases) 页面下载 macOS arm64 `.zip` 文件
-2. 解压 `.zip`，将 **Blackshot.app** 移入应用程序文件夹
+1. 从 [Releases](https://github.com/Harmonese/blackshot/releases) 页面下载 macOS arm64 `.dmg` 文件
+2. 打开 `.dmg`，将 **Blackshot.app** 拖入 **Applications（应用程序）**
 3. 首次截图时，按照提示授予屏幕录制权限
 
 > 当前构建使用 Apple Development 签名，尚未公证，在其他 Mac 上首次启动可能被系统阻止。

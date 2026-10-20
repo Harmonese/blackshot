@@ -10,6 +10,7 @@ The format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.
 
 ### Added
 
+- A drag-to-install DMG and a packaging command that verifies the mounted application and generates a SHA-256 checksum.
 - An editable SVG source for the existing icon design and a generator that renders every PNG size directly from that source.
 - Shared `AGENTS.md` development guidance, migrated from the local Claude-specific guide, including documentation and repository-scope conventions.
 
